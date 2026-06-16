@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    { "source": "/a",       "destination": "/a/index.html" },
+    { "source": "/a/(.*)", "destination": "/a/$1" },
+    { "source": "/(.*)",   "destination": "/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/a/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    }
+  ]
+}
