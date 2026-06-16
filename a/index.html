@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080808">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Zentra Control">
+  <title>Zentra</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../firebase-config.js"></script>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo-wrap">
+    <div class="loading-logo">ZENTRA CONTROL</div>
+    <div class="loading-sub">Owner Control Center</div>
+  </div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
+<!-- Login Page -->
+<div id="login-page" class="hidden">
+  <div class="login-page">
+    <div class="login-bg-orb gold"></div>
+    <div class="login-bg-orb blue"></div>
+    <div class="login-card">
+      <div class="login-badge">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5L12 1z"/></svg>
+        Owner Only
+      </div>
+      <h1 class="login-title">Zentra Control</h1>
+      <p class="login-sub">Masuk untuk mengelola platform Zentra.</p>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" id="login-email" class="form-input" placeholder="owner@zentra.app" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="login-pass" class="form-input" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div id="login-error" class="login-error"></div>
+      <button id="login-btn" class="btn-gold" style="margin-top:8px" onclick="handleLogin()">Masuk ke Control Center</button>
+    </div>
+  </div>
+</div>
+
+<!-- App Layout -->
+<div id="app-layout" class="app-layout hidden">
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-name">Zentra Control</div>
+        <div class="sidebar-brand-sub">Owner Center</div>
+      </div>
+      <button class="sidebar-close-btn" onclick="closeSidebar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Menu</div>
+      <div class="nav-link active" data-page="dashboard" onclick="navigate('dashboard')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-link" data-page="information" onclick="navigate('information')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+        Informasi
+        <span class="nav-badge" id="nav-info-count">0</span>
+      </div>
+      <div class="nav-link" data-page="broadcast" onclick="navigate('broadcast')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.49 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.4 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.4a16 16 0 0 0 6.29 6.29l.76-.76a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Broadcast
+      </div>
+      <div class="nav-link" data-page="banners" onclick="navigate('banners')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+        Banner
+      </div>
+      <div class="nav-link" data-page="analytics" onclick="navigate('analytics')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Analitik
+      </div>
+      <div class="nav-section-title">Sistem</div>
+      <div class="nav-link" data-page="settings" onclick="navigate('settings')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Pengaturan
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+
+      <div class="owner-card" onclick="handleLogout()">
+        <div class="owner-avatar" id="owner-initial">O</div>
+        <div class="owner-info">
+          <div class="owner-name" id="owner-name">Owner</div>
+          <div class="owner-role">Owner</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--white-20)" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-content">
+
+    <!-- Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="menu-btn" id="menu-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="page-title" id="page-title">Dashboard</div>
+      </div>
+      <div class="header-right">
+        <button class="header-btn" onclick="navigate('information');openCreateInfo()" title="Buat Informasi">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="header-btn" title="Logout" onclick="handleLogout()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── DASHBOARD PAGE ── -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-body">
+        <div style="margin-bottom:20px">
+          <h2 class="font-display" style="font-size:1.3rem;font-weight:700">Selamat datang kembali 👋</h2>
+          <p class="text-muted text-sm" style="margin-top:4px">Pantau dan kelola platform Zentra dari sini.</p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card gold-accent">
+            <div class="stat-icon gold"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
+            <div class="stat-value" id="dash-total">—</div>
+            <div class="stat-label">Total Post</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg></div>
+            <div class="stat-value" id="dash-active">—</div>
+            <div class="stat-label">Aktif</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+            <div class="stat-value" id="dash-inactive">—</div>
+            <div class="stat-label">Tidak Aktif</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon yellow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="stat-value" id="dash-pinned">—</div>
+            <div class="stat-label">Di-pin</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="stat-value" id="dash-views">—</div>
+            <div class="stat-label">Total Views</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/></svg></div>
+            <div class="stat-value" id="dash-broadcasts">—</div>
+            <div class="stat-label">Broadcast</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <div class="quick-btn" onclick="navigate('information');openCreateInfo()">
+            <div class="quick-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="quick-label">Buat Informasi</div>
+          </div>
+          <div class="quick-btn" onclick="navigate('broadcast')">
+            <div class="quick-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/></svg></div>
+            <div class="quick-label">Kirim Broadcast</div>
+          </div>
+          <div class="quick-btn" onclick="navigate('banners')">
+            <div class="quick-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></div>
+            <div class="quick-label">Kelola Banner</div>
+          </div>
+          <div class="quick-btn" onclick="navigate('settings')">
+            <div class="quick-icon danger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="quick-label">Emergency</div>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <div class="section-title">Aktivitas Terbaru</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="navigate('information')">Lihat Semua</button>
+          </div>
+          <div id="activity-feed">
+            <div style="padding:20px;text-align:center"><div class="spinner" style="margin:0 auto"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── INFORMATION PAGE ── -->
+    <div id="page-information" class="page">
+      <div class="page-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+          <div>
+            <h2 class="font-display" style="font-size:1.2rem;font-weight:700">Informasi</h2>
+            <p class="text-muted text-sm" style="margin-top:2px"><span id="info-count">0</span> post ditemukan</p>
+          </div>
+          <button class="btn btn-primary" onclick="openCreateInfo()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Buat Informasi
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-wrap">
+            <div class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+            <input type="text" class="search-input" id="info-search" placeholder="Cari judul atau konten...">
+          </div>
+          <select class="filter-select" onchange="setInfoFilter('category',this.value)">
+            <option value="">Semua Kategori</option>
+            <option>Announcement</option><option>Maintenance</option><option>Anime Update</option>
+            <option>News</option><option>Event</option><option>Promotion</option><option>Important</option>
+          </select>
+          <select class="filter-select" onchange="setInfoFilter('status',this.value)">
+            <option value="">Semua Status</option>
+            <option value="active">Active</option><option value="inactive">Inactive</option>
+            <option value="pinned">Pinned</option><option value="scheduled">Scheduled</option>
+            <option value="archived">Archived</option>
+          </select>
+          <select class="filter-select" onchange="setInfoFilter('priority',this.value)">
+            <option value="">Semua Prioritas</option>
+            <option>Low</option><option>Medium</option><option>High</option><option>Critical</option>
+          </select>
+          <div class="view-toggle">
+            <button id="view-list" class="view-btn active" onclick="setInfoView('list')" title="List">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+            <button id="view-grid" class="view-btn" onclick="setInfoView('grid')" title="Grid">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="info-list-container">
+          <div style="padding:40px;text-align:center"><div class="spinner" style="margin:0 auto"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BROADCAST PAGE ── -->
+    <div id="page-broadcast" class="page">
+      <div class="page-body">
+        <h2 class="font-display" style="font-size:1.2rem;font-weight:700;margin-bottom:20px">Broadcast Center</h2>
+
+        <div class="section-card" style="margin-bottom:20px">
+          <div class="section-header"><div class="section-title-wrap"><div class="section-title">Kirim Broadcast Baru</div></div></div>
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label class="form-label">Judul</label>
+              <input type="text" id="bc-title" class="form-input" placeholder="Judul broadcast...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tipe</label>
+              <select id="bc-type" class="form-select">
+                <option>Info</option><option>Warning</option><option>Update</option><option>Critical</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:12px">
+            <label class="form-label">Pesan</label>
+            <textarea id="bc-message" class="form-textarea" placeholder="Isi pesan broadcast..." rows="3"></textarea>
+          </div>
+          <div style="margin-top:14px">
+            <button id="send-bc-btn" class="btn btn-primary btn-lg" onclick="sendBroadcast()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+              Kirim Broadcast
+            </button>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header"><div class="section-title-wrap"><div class="section-title">Riwayat Broadcast</div></div></div>
+          <div id="broadcast-list"><div style="padding:20px;text-align:center"><div class="spinner" style="margin:0 auto"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BANNERS PAGE ── -->
+    <div id="page-banners" class="page">
+      <div class="page-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+          <h2 class="font-display" style="font-size:1.2rem;font-weight:700">Kelola Banner</h2>
+          <button class="btn btn-primary" onclick="openModal('banner-modal')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Tambah Banner
+          </button>
+        </div>
+        <div id="banner-list"><div style="padding:40px;text-align:center"><div class="spinner" style="margin:0 auto"></div></div></div>
+      </div>
+    </div>
+
+    <!-- ── ANALYTICS PAGE ── -->
+    <div id="page-analytics" class="page">
+      <div class="page-body">
+        <h2 class="font-display" style="font-size:1.2rem;font-weight:700;margin-bottom:20px">Analitik</h2>
+        <div id="analytics-body"><div style="padding:40px;text-align:center"><div class="spinner" style="margin:0 auto"></div></div></div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS PAGE ── -->
+    <div id="page-settings" class="page">
+      <div class="page-body">
+        <h2 class="font-display" style="font-size:1.2rem;font-weight:700;margin-bottom:20px">Pengaturan</h2>
+
+        <!-- Emergency -->
+        <div class="section-card" style="margin-bottom:20px">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <div class="section-title">Emergency Notice</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="emergency-dot" style="display:none" id="emergency-dot"></div>
+              <span class="text-sm text-muted" id="emergency-status-text">Tidak Aktif</span>
+            </div>
+          </div>
+          <p class="text-muted text-sm" style="margin-bottom:14px">Ketika aktif, pesan darurat akan muncul di Zentra dan menimpa semua konten.</p>
+          <div class="form-group" style="margin-bottom:14px">
+            <label class="form-label">Pesan Emergency</label>
+            <textarea id="emergency-msg" class="form-textarea" rows="3" placeholder="Contoh: Server sedang dalam maintenance. Diperkirakan selesai pukul 22:00 WIB."></textarea>
+          </div>
+          <button id="emergency-toggle-btn" class="btn btn-danger btn-lg w-full" onclick="toggleEmergency()">
+            Aktifkan Emergency Notice
+          </button>
+        </div>
+
+        <!-- Owner Profile -->
+        <div class="section-card" style="margin-bottom:20px">
+          <div class="section-header"><div class="section-title-wrap"><div class="section-title">Profil Owner</div></div></div>
+          <div style="display:flex;align-items:center;gap:14px">
+            <div class="owner-avatar" style="width:52px;height:52px;font-size:1.1rem" id="settings-initial">O</div>
+            <div>
+              <div style="font-weight:700;margin-bottom:2px" id="settings-name">Owner</div>
+              <div class="text-muted text-sm" id="settings-email">—</div>
+              <div style="margin-top:6px"><span class="status-badge badge-pinned">Owner</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="section-card" style="border-color:rgba(239,68,68,0.15)">
+          <div class="section-header"><div class="section-title-wrap"><div class="section-title text-danger">Danger Zone</div></div></div>
+          <button class="btn btn-danger btn-lg w-full" onclick="handleLogout()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar dari Zentra Control
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dash
+    </div>
+    <div class="bottom-nav-item" data-page="information" onclick="navigate('information')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+      Info
+    </div>
+    <div class="bottom-nav-item" data-page="broadcast" onclick="navigate('broadcast')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2"/></svg>
+      Broadcast
+    </div>
+    <div class="bottom-nav-item" data-page="analytics" onclick="navigate('analytics')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analitik
+    </div>
+    <div class="bottom-nav-item" data-page="settings" onclick="navigate('settings')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg>
+      Setting
+    </div>
+  </nav>
+
+</div><!-- end app-layout -->
+
+<!-- ── MODALS ── -->
+
+<!-- Create/Edit Info Modal -->
+<div class="modal-overlay" id="info-modal" onclick="if(event.target===this)closeModal('info-modal')">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <div class="modal-title" id="info-modal-title">Buat Informasi</div>
+      <button class="modal-close" onclick="closeModal('info-modal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <form id="info-form" onsubmit="return false">
+        <div class="form-row two-col" style="margin-bottom:14px">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Judul <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="info-title-input" class="form-input" placeholder="Judul informasi..." maxlength="100">
+            <div class="char-count"><span id="title-char-count">0</span>/100</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kategori</label>
+            <select id="info-type-select" class="form-select">
+              <option>Announcement</option><option>Maintenance</option><option>Anime Update</option>
+              <option>News</option><option>Event</option><option>Promotion</option><option>Important</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prioritas</label>
+            <select id="info-priority-select" class="form-select">
+              <option>Low</option><option>Medium</option><option selected>Normal</option><option>High</option><option>Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:14px">
+          <label class="form-label">Konten <span style="color:var(--danger)">*</span></label>
+          <textarea id="info-content-input" class="form-textarea" placeholder="Isi konten informasi..." rows="5"></textarea>
+        </div>
+        <div class="form-row two-col" style="margin-bottom:14px">
+          <div class="form-group">
+            <label class="form-label">Tags (pisahkan dengan koma)</label>
+            <input type="text" id="info-tags-input" class="form-input" placeholder="update, maintenance, ...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Jadwalkan Publikasi</label>
+            <input type="datetime-local" id="info-schedule-input" class="form-input">
+            <div class="form-hint">Kosongkan jika ingin publikasi langsung.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:20px;flex-wrap:wrap">
+          <div class="toggle-wrap">
+            <div class="toggle on" id="info-status-toggle" onclick="toggleItem(this)"></div>
+            <div class="toggle-label">Status Aktif</div>
+          </div>
+          <div class="toggle-wrap">
+            <div class="toggle" id="info-pin-toggle" onclick="toggleItem(this)"></div>
+            <div class="toggle-label">Pin Informasi</div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('info-modal')">Batal</button>
+      <button id="save-info-btn" class="btn btn-primary" onclick="saveInfo()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
+        Simpan
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Info Detail Modal -->
+<div class="modal-overlay" id="info-detail-modal" onclick="if(event.target===this)closeModal('info-detail-modal')">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <div class="modal-title">Detail Informasi</div>
+      <button class="modal-close" onclick="closeModal('info-detail-modal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="info-detail-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('info-detail-modal')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Banner Modal -->
+<div class="modal-overlay" id="banner-modal" onclick="if(event.target===this)closeModal('banner-modal')">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <div class="modal-title">Tambah Banner</div>
+      <button class="modal-close" onclick="closeModal('banner-modal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:12px">
+        <label class="form-label">Judul Banner</label>
+        <input type="text" id="banner-title" class="form-input" placeholder="Judul banner...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Link</label>
+        <input type="url" id="banner-link" class="form-input" placeholder="https://...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('banner-modal')">Batal</button>
+      <button class="btn btn-primary" onclick="saveBanner()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-icon danger" id="confirm-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div class="confirm-title" id="confirm-title">Konfirmasi</div>
+    <div class="confirm-text" id="confirm-text">Apakah kamu yakin?</div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="confirmCancel()">Batal</button>
+      <button class="btn btn-danger" id="confirm-ok" onclick="confirmOk()">Konfirmasi</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Firebase + App Script -->
+<script type="module" src="js/app.js"></script>
+<script>
+// Patch settings page owner info when app loads
+document.addEventListener('DOMContentLoaded', () => {
+  // will be set after auth
+  const obs = setInterval(() => {
+    const u = window._zentraUser;
+    if (u) {
+      const n = u.email?.split('@')[0] || 'Owner';
+      const nameEl = document.getElementById('settings-name');
+      const emailEl = document.getElementById('settings-email');
+      const initEl = document.getElementById('settings-initial');
+      if (nameEl) nameEl.textContent = n;
+      if (emailEl) emailEl.textContent = u.email;
+      if (initEl) initEl.textContent = n[0].toUpperCase();
+      clearInterval(obs);
+    }
+  }, 500);
+});
+</script>
+</body>
+</html>
